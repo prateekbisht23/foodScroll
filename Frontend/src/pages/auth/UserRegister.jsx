@@ -46,7 +46,7 @@ export default function UserRegister() {
 
                     <p className="text-sm text-gray-400 font-light mb-6 flex gap-2">
                         Switch:<Link to="/user/register" className="text-blue-500">User</Link>|
-                        <Link to="/partner/register" className="hover:text-blue-400">Partner</Link>
+                        <Link to="/food-partner/register" className="hover:text-blue-400">Partner</Link>
                     </p>
                 </div>
 

@@ -43,8 +43,8 @@ export default function UserLogin() {
                     </p>
 
                     <p className="text-sm text-gray-400 font-light mb-6 flex gap-2">
-                        Switch:<Link to="/user/register" className="text-blue-500">User</Link>|
-                        <Link to="/partner/register" className="hover:text-blue-400">Partner</Link>
+                        Switch:<Link to="/user/login" className="text-blue-500">User</Link>|
+                        <Link to="/food-partner/login" className="hover:text-blue-400">Partner</Link>
                     </p>
                 </div>
 

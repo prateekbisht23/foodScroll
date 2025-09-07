@@ -25,7 +25,7 @@ export default function PartnerLogin() {
 
             console.log(response)
 
-            navigate("/add-item")
+            navigate(`/food-partner/${response.data.foodPartner._id}`)
 
         } catch (err) {
             console.error(err)
@@ -45,8 +45,8 @@ export default function PartnerLogin() {
                     </p>
 
                     <p className="text-sm text-gray-400 font-light mb-6 flex gap-2">
-                        Switch: <Link to="/user/register" className="hover:text-blue-400">User</Link>|
-                        <Link to="/partner/register" className="text-blue-500">Partner</Link>
+                        Switch: <Link to="/user/login" className="hover:text-blue-400">User</Link>|
+                        <Link to="/food-partner/login" className="text-blue-500">Partner</Link>
                     </p>
                 </div>
 
