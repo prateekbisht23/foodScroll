@@ -174,12 +174,49 @@ async function loginFoodPartner(req, res){
 }
 
 function logoutFoodPartner(req, res){
+
+    console.log("Reached Logot Controller")
+
     res.clearCookie("token");
     res.status(200).json({
         message:"Food Partner logged out successfully!!"
     });
 }
 
+
+async function getLoggedInUser(req, res) {
+    try {
+        if (req.foodPartner) {
+            const foodPartner = await foodPartnerModel.findById(req.foodPartner._id).select('-password');
+            return res.status(200).json({
+                message: "Food Partner details fetched successfully",
+                user: {
+                    id: foodPartner._id,
+                    name: foodPartner.contactName,
+                    email: foodPartner.email,
+                    role: "food-partner",
+                },
+            });
+        }
+
+        // Otherwise, fetch the user details
+        const user = await userModel.findById(req.user._id).select('-password');
+        return res.status(200).json({
+            message: "User details fetched successfully",
+            user: {
+                id: user._id,
+                name: user.fullName,
+                email: user.email,
+                role: "user",
+            },
+        });
+    } catch (error) {
+        console.error("Error fetching logged-in user details:", error);
+        res.status(500).json({
+            message: "An error occurred while fetching user details",
+        });
+    }
+}
 
 
 
@@ -189,5 +226,6 @@ module.exports = {
     logoutUser,
     registerFoodPartner,
     loginFoodPartner,
-    logoutFoodPartner
+    logoutFoodPartner,
+    getLoggedInUser
 }

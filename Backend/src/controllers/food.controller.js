@@ -26,26 +26,32 @@ async function createFoodItem(req, res){
 
 async function getFoodItems(req, res){
     
+    const userId = req.user._id;
+
     const foodItems = await foodItemModel.find({});
+    const likedItems = await likeModel.find({ user: userId }).select("foodItem");
+    const savedItems = await saveModel.find({ user: userId }).select("foodItem");
+
+    const likedSet = new Set(likedItems.map((like) => like.foodItem.toString()));
+    const savedSet = new Set(savedItems.map((save) => save.foodItem.toString()));
+
+    const foodItemsWithStatus = foodItems.map((item) => ({
+        ...item.toObject(),
+        liked: likedSet.has(item._id.toString()),
+        saved: savedSet.has(item._id.toString()),
+    }));
 
     res.status(200).json({
-        message:"Food Items Fetched Succsessfully!!",
-        foodItems
-    })
-
+        message: "Food Items Fetched Successfully!!",
+        foodItems: foodItemsWithStatus,
+    });
+    
 }
 
 async function likeFoodItem(req, res) {
 
-    console.log("reached controller")
-    
-    console.log(req.body)
-
     const { foodId } = req.body;
-    console.log(foodId)
     const user = req.user;
-
-    console.log(user)
 
     const isAlreadyLiked = await likeModel.findOne({
         user: user._id,
@@ -72,13 +78,29 @@ async function likeFoodItem(req, res) {
         foodItem: foodId
     })
 
-    await foodModel.findByIdAndUpdate(foodId, {
+    await foodItemModel.findByIdAndUpdate(foodId, {
         $inc: { likeCount: 1 }
     })
 
     res.status(201).json({
         message: "Food liked successfully",
         like
+    })
+
+}
+
+async function getLikedItem(req, res){
+
+    console.log("Reached getLikedItem")
+
+    const user = req.user;
+    
+    console.log(user);
+    const likedItems = await likeModel.find({ user: user._id });
+
+    res.status(200).json({
+        message:"Liked Items Fetched Successfully!!",
+        likedItems
     })
 
 }
@@ -99,8 +121,8 @@ async function saveFoodItem(req, res) {
             foodItem: foodId
         })
 
-        await foodModel.findByIdAndUpdate(foodId, {
-            $inc: { savesCount: -1 }
+        await foodItemModel.findByIdAndUpdate(foodId, {
+            $inc: { saveCount: -1 }
         })
 
         return res.status(200).json({
@@ -113,8 +135,8 @@ async function saveFoodItem(req, res) {
         foodItem: foodId
     })
 
-    await foodModel.findByIdAndUpdate(foodId, {
-        $inc: { savesCount: 1 }
+    await foodItemModel.findByIdAndUpdate(foodId, {
+        $inc: { saveCount: 1 }
     })
 
     res.status(201).json({
@@ -124,10 +146,25 @@ async function saveFoodItem(req, res) {
 
 }
 
+async function getSavedItem(req, res){
+
+    const user = req.user;
+    
+    const savedItems = await saveModel.find({ user: user._id });
+
+    res.status(200).json({
+        message:"Saved Items Fetched Successfully!!",
+        savedItems
+    })
+
+}
+
 
 module.exports = {
     createFoodItem,
     getFoodItems,
     likeFoodItem,
-    saveFoodItem
+    saveFoodItem,
+    getLikedItem,
+    getSavedItem
 }

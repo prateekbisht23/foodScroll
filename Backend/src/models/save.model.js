@@ -9,7 +9,7 @@ const saveSchema = new mongoose.Schema({
     },
     foodItem: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'food',
+        ref: 'food-item',
         required: true
     }
 }, {

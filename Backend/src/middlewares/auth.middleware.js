@@ -31,8 +31,6 @@ async function authFoodPartnerMiddleware(req, res, next){
 
 async function authUserMiddleware(req, res, next) {
 
-    console.log("Reached middleware")
-    
     const token = req.cookies.token;
 
     if(!token){
@@ -45,15 +43,8 @@ async function authUserMiddleware(req, res, next) {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        console.log(decoded)
-
-        const user = await userModel.findById(decoded._id);
-
-        console.log(user);
-
+        const user = await userModel.findById(decoded.id);
         req.user = user;
-
-        console.log(req.user)
 
         next()
 
